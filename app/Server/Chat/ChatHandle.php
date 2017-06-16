@@ -2,6 +2,7 @@
 
 namespace App\Server\Chat;
 
+use App\Service\PushService;
 use App\Service\RoomService;
 use App\Service\UserService;
 use webSocket\ServerHandle;
@@ -9,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class ChatHandle extends ServerHandle
 {
-
     /**
      * 对客户端发送的登录消息进行处理
      * @param $fd
@@ -50,13 +50,13 @@ class ChatHandle extends ServerHandle
      */
     public function message_Async($fd,$data){
 
-        $this->pushToAllOutMeAsync($fd,$this->results("async",1,[
-            'message' => "Async 任务发送成功"
+        PushService::pushToAllOutMeAsync($fd,$this->results("async",1,[
+            'message' => "Async 任务发送成功2"
         ]));
 
-        $this->pushToAllAsync($this->results("async1",1,[
-            'message' => "Async 任务发送成功"
-        ]));
+        /*PushService::pushToAllAsync($this->results("async1",1,[
+            'message' => "Async 任务发送成功1"
+        ]));*/
 
     }
 
