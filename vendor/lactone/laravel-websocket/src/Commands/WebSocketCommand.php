@@ -40,6 +40,8 @@ abstract class WebSocketCommand extends Command
      */
     public function handle()
     {
+        ini_set('default_socket_timeout', -1);
+
         $webSocketConfig =  app('config')->get($this->getConfig());
         if(!$webSocketConfig){
             throw new \Exception("请设置webSocket配置!");

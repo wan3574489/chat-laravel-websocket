@@ -155,7 +155,7 @@ class ServerHandle
 
         \swoole_timer_after(200,function () use ($fd,$the){
             try{
-
+                Log::info("{$fd}开始消费！");
                 while($value = Queue::lpop(PushService::getFdChannel($fd))){
                     $this->pushToFd( $fd, $value );
                 }
@@ -163,7 +163,10 @@ class ServerHandle
                 $the->timer($fd);
 
             }catch (\Exception $e){
-                $this->close($fd);
+
+                Log::info("timer error:".$e->getMessage());
+
+                $this->triggerClose($fd);
             }
         });
 
@@ -182,8 +185,7 @@ class ServerHandle
     public function openAfter($fd){
         Log::info(" {$fd} is open! ");
 
-        Redis::sadd(PushService::Store_fds,$fd);
-        Redis::incr(PushService::Store_fds_length);
+        PushService::login($fd);
 
         $length = Redis::get(PushService::Store_fds_length);
         Log::info("当前 fds length {$length}");
@@ -208,8 +210,18 @@ class ServerHandle
     public function closeAfter($fd){
         log:info($fd." is close !");
 
-        Redis::srem(PushService::Store_fds,$fd);
-        Redis::decr(PushService::Store_fds_length);
+        PushService::out($fd);
     }
 
+    /**
+     * 触发关闭事件
+     * @param $fd
+     */
+    public function triggerClose($fd){
+        $this->openBefore($fd);
+
+        $this->close($fd);
+
+        $this->closeAfter($fd);
+    }
 }

@@ -3,6 +3,7 @@
 
 namespace App\Service;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use webSocket\Facades\Queue;
 
@@ -27,6 +28,8 @@ class PushService
                 Redis::srem(self::Store_fds,$key);
             }
         }
+
+        Log::info("clean push all info !");
 
         Redis::set(self::Store_fds_length,0);
     }
@@ -82,5 +85,27 @@ class PushService
      */
     static public function getFdChannel($fd){
         return "webSocket.fd.".$fd;
+    }
+
+    /**
+     * 将fd纳入push服务
+     * @param $fd
+     */
+    static public function login($fd){
+        Redis::sadd(PushService::Store_fds,$fd);
+        Redis::incr(PushService::Store_fds_length);
+    }
+
+    /**
+     * fd推出push服务
+     * @param $fd
+     */
+    static public function out($fd){
+        Redis::srem(PushService::Store_fds,$fd);
+        Redis::decr(PushService::Store_fds_length);
+    }
+
+    static public function has($fd){
+
     }
 }
