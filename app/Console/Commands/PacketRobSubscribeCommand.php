@@ -9,13 +9,13 @@
 namespace App\Console\Commands;
 
 use App\Server\Packet\Subscribe\PacketRobSubscribe;
-use App\Server\RedisSubscribeCommand;
+use webSocket\RedisSubscribeCommand;
 
 class PacketRobSubscribeCommand extends RedisSubscribeCommand
 {
-     protected $signature = 'PacketRob:Start';
+     protected $signature = 'Chat:PacketRob';
 
-     protected $description = 'RedisSubscribeCommand';
+     protected $description = 'PacketRobSubscribeCommand';
      
      protected $channel = 'packet.rob';
 

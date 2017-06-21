@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Service\PushService;
+use webSocket\Service\PushService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 

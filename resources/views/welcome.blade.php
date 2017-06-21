@@ -92,5 +92,5 @@
             </div>
         </div>
     </body>
-<script src="/js/chat.app.js"></script>
+<script src="/js/push.js"></script>
 </html>

@@ -5,6 +5,7 @@ namespace App\Console;
 
 use App\Console\Commands\ChatLogCommand;
 use App\Console\Commands\ChatWebSocketCommand;
+use App\Console\Commands\PacketRobSubscribeCommand;
 use App\Console\Commands\RobotChatCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -19,7 +20,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
       ChatWebSocketCommand::class,
       RobotChatCommand::class,
-        ChatLogCommand::class
+      ChatLogCommand::class,
+      PacketRobSubscribeCommand::class
     ];
 
     /**

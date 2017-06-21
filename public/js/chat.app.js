@@ -1,5 +1,4 @@
 
-
 function GetDateStr(AddDayCount) {
     var dd = new Date();
     dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
@@ -138,7 +137,7 @@ var chat = {
     },
     ws : function(){
         try{
-            console.log(123);
+
             this.data.wSock = new WebSocket("ws://120.26.92.145:9501");
 
             this.wsOpen();

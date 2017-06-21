@@ -2,7 +2,8 @@
 
 namespace App\Server\Chat;
 
-use App\Service\PushService;
+use App\Server\Packet\Subscribe\PacketRobSubscribe;
+use webSocket\Service\PushService;
 use App\Service\RoomService;
 use App\Service\UserService;
 use webSocket\ServerHandle;
@@ -10,6 +11,10 @@ use Illuminate\Support\Facades\Log;
 
 class ChatHandle extends ServerHandle
 {
+    protected $channels = [
+        "packet.rob"=>PacketRobSubscribe::class
+    ];
+
     /**
      * 对客户端发送的登录消息进行处理
      * @param $fd
@@ -24,19 +29,19 @@ class ChatHandle extends ServerHandle
 
         if($user = $UserService->userLogin($data,$fd)){
 
-            Log::info('add user success');
+            //Log::info('add user success');
 
-            //发送消息消息给自己
-            $this->pushToFd($fd,$this->results("Login",1,[
+            /*//发送消息消息给自己
+            PushService::pushToFdAsync($fd,$this->results("Login",1,[
                 'name' => $data['name'],
                 'message'=>'您登陆成功'
             ]));
 
             //发送消息给所有人
-            $this->pushToAllOutMe($fd,$this->results("Login_Other",1,[
+            PushService::pushToAllOutMeAsync($fd,$this->results("Login_Other",1,[
                 'name'=>$data['name'],
                 'message' =>'用户'.$data['name']."登陆成功"
-            ]));
+            ]));*/
 
         }else{
             Log::info('add user fail!');
@@ -51,7 +56,7 @@ class ChatHandle extends ServerHandle
     public function message_Async($fd,$data){
 
         PushService::pushToAllOutMeAsync($fd,$this->results("async",1,[
-            'message' => "Async 任务发送成功2"
+            'message' => "Async 消息发送成功"
         ]));
 
         /*PushService::pushToAllAsync($this->results("async1",1,[
@@ -66,7 +71,12 @@ class ChatHandle extends ServerHandle
      * @param $data
      */
     public function message_publish($fd,$data){
-        $this->publish("packet.rob",is_string($data)?$data:json_encode($data));
+        $data = is_string($data)?$data:json_encode($data);
+
+        $this->publish("packet.rob",[
+            'fd'=>$fd,
+            'data'=>$data
+        ]);
     }
 
     /**
